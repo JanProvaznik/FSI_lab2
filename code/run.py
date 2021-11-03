@@ -7,28 +7,30 @@ ab = search.GPSProblem('A', 'B', search.romania)
 cz = search.GPSProblem('C', 'Z', search.romania)
 ds = search.GPSProblem('D', 'S', search.romania)
 li = search.GPSProblem('L', 'I', search.romania)
+nu = search.GPSProblem('N', 'U', search.romania)
 
-print(search.breadth_first_graph_search(ab).path()) #BFS
-print(search.depth_first_graph_search(ab).path()) #DFS
+problems = [ab, cz, ds, li, nu]
+
+print("BFS A->B")
+print(search.breadth_first_graph_search(ab).path())  # BFS
+print("DFS A->B")
+print(search.depth_first_graph_search(ab).path())  # DFS
 print("---------------------")
+print()
+print("comparación de búsquedas con/sin subestimación")
+print()
+for problem in problems:
+    print(problem.initial," -> ",problem.goal)
+    print("no heuristic")
+    print(search.dijkstra(problem).path())  # Dijkstra/RyA
+    print()
+    print("with heuristic")
+    print(search.heap_heuristic_graph_search(problem).path())  # RyAsub
+    print("+++++++++++++++++++++++++++++++++++++++++++++++++")
+    print()
 
-print(search.dijkstra(ab).path()) #Dijkstra/RyA
-print(search.heuristic_graph_search(ab).path()) #RyAsub
-print("+++++++++++++")
-
-
-print(search.dijkstra(cz).path()) #Dijkstra/RyA
-print(search.heuristic_graph_search(cz).path()) #RyAsub
-print("+++++++++++++")
-
-print(search.dijkstra(ds).path()) #Dijkstra/RyA
-print(search.heuristic_graph_search(ds).path()) #RyAsub
-
-print("+++++++++++++")
-print(search.dijkstra(li).path()) #Dijkstra/RyA
-print(search.heuristic_graph_search(li).path()) #RyAsub
 # Conclusión:
-# Dijkstra y heuristica dan el mismo camino, que queremos.
+# Dijkstra y subestimación con heuristica dan el mismo camino, que queremos.
 # Con la heurística expandemos menos nodos (en caso de AB, 24 vs 6).
 
 # Result:

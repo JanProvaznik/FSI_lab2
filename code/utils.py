@@ -4,6 +4,7 @@ import search
 
 infinity = 1.0e400
 import math
+import heapq
 
 
 def Dict(**entries):
@@ -546,7 +547,42 @@ class FIFOQueue(Queue):
         return e
 
 
-class PriorityQueue(Queue):
+# Usa la librería estándar heapq
+#pop O(logn), append O(logn)
+class HeapPriorityQueue():
+    def __init__(self, property_name):
+        self.property_name = property_name
+        self.heap = []
+
+    def pop(self):
+        return heapq.heappop(self.heap)[1]
+
+    def append(self, node):
+        value = node.__dict__[self.property_name]
+        heapq.heappush(self.heap, (value, node))
+
+    def extend(self, items):
+        for item in items:
+            self.append(item)
+
+class HeapPriorityQueueHeuristic():
+    def __init__(self, property_name, problem):
+        self.property_name = property_name
+        self.heuristic = problem.h
+        self.heap = []
+
+    def pop(self):
+        return heapq.heappop(self.heap)[1]
+
+    def append(self, node):
+        value = node.__dict__[self.property_name] + self.heuristic(node)
+        heapq.heappush(self.heap, (value, node))
+
+    def extend(self, items):
+        for item in items:
+            self.append(item)
+
+class ArrayPriorityQueue(Queue):
     """A Min Priority Queue using List, parametrized by property which we are trying to minimize and
     a default maximal object.
     """
@@ -557,13 +593,13 @@ class PriorityQueue(Queue):
         self.start = 0
         self.property_name = property_name
 
-    def append(self, item): # O(1)
+    def append(self, item):  # O(1)
         self.A.append(item)
 
     def __len__(self):
         return len(self.A) - self.start
 
-    def extend(self, items): # adding x items O(x)
+    def extend(self, items):  # adding x items O(x)
         self.A.extend(items)
 
     def pop(self):  # ExtractMin  O(n)
@@ -577,7 +613,7 @@ class PriorityQueue(Queue):
         return minimal
 
 
-class PriorityQueueHeuristic(Queue):
+class ArrayPriorityQueueHeuristic(Queue):
     """A Min Priority Queue using List, parametrized by property which we are trying to minimize and
     a default maximal object. Using heuristic in problem.
     """
@@ -604,7 +640,8 @@ class PriorityQueueHeuristic(Queue):
         minimal = self.defaultMax
         for n in self.A:
             # use heuristic when choosing node
-            if n.__dict__[self.property_name] + self.heuristic(n)< minimal.__dict__[self.property_name]+self.heuristic(minimal):
+            if n.__dict__[self.property_name] + self.heuristic(n) < minimal.__dict__[
+                self.property_name] + self.heuristic(minimal):
                 minimal = n
         self.A.remove(minimal)
         return minimal

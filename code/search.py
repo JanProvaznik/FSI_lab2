@@ -73,6 +73,9 @@ class Node:
 
     def __repr__(self):
         return "<Node %s>" % (self.state,)
+    # prevent error from comparing nodes with same path_cost
+    def __lt__(self, other):
+        return self
 
     def path(self):
         """Create a list of nodes from the root to this node."""
@@ -124,12 +127,21 @@ def depth_first_graph_search(problem):
 # RyA
 def dijkstra(problem):
     """use the distances to get shortest path"""
-    return graph_search(problem, PriorityQueue(Node(None, path_cost=infinity), "path_cost"))
+    return graph_search(problem, ArrayPriorityQueue(Node(None, path_cost=infinity), "path_cost"))
+
+# RyA
+def heap_dijkstra(problem):
+    """use the distances to get shortest path"""
+    return graph_search(problem, HeapPriorityQueue("path_cost"))
+
+##RyA con subestimacion usando ArrayPriorityQueue
+def array_heuristic_graph_search(problem):
+    return graph_search(problem, ArrayPriorityQueueHeuristic(Node(None, path_cost=infinity), "path_cost", problem))
 
 
-##RyAsub
-def heuristic_graph_search(problem):
-    return graph_search(problem, PriorityQueueHeuristic(Node(None, path_cost=infinity), "path_cost", problem))
+##RyA con subestimacion usando HeapPriorityQueue
+def heap_heuristic_graph_search(problem):
+    return graph_search(problem, HeapPriorityQueueHeuristic("path_cost", problem))
 
 
 # _____________________________________________________________________________
